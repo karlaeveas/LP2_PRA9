@@ -1,0 +1,102 @@
+#include <iostream>
+#include <string>
+using namespace std;
+class Personaje {
+protected:
+    string nombre;
+    int salud;
+    int ataque;
+    int defensa;
+public:
+    Personaje(string nombre, int salud, int ataque, int defensa)
+        : nombre(nombre), salud(salud), ataque(ataque), defensa(defensa) {}
+    virtual void atacar(Personaje& enemigo) = 0;
+    virtual void defender() = 0;
+    virtual void usarHabilidadEspecial() = 0;
+    bool estaVivo() const {
+        return salud > 0;
+    }
+    string getNombre() const {
+        return nombre;
+    }
+    int getSalud() const {
+        return salud;
+    }
+    int getDefensa() const {
+        return defensa;
+    }
+    void recibirDano(int dano) {
+        salud -= dano;
+        if (salud < 0) salud = 0;
+    }
+    virtual ~Personaje() {}
+};
+class Guerrero : public Personaje {
+public:
+    Guerrero(string nombre)
+        : Personaje(nombre, 150, 30, 20) {}
+    void atacar(Personaje& enemigo) override {
+        int dano = ataque - enemigo.getDefensa() / 2;
+        if (dano < 0) dano = 0;
+        enemigo.recibirDano(dano);
+        cout << nombre << " ataca a " << enemigo.getNombre() << " causando " << dano << " puntos de daño.\n";
+    }
+    void defender() override {
+        defensa += 10;
+        cout << nombre << " se defiende, aumentando su defensa a " << defensa << ".\n";
+    }
+    void usarHabilidadEspecial() override {
+        int curacion = 20;
+        salud += curacion;
+        cout << nombre << " usa su habilidad especial y se cura " << curacion << " puntos de salud.\n";
+    }
+};
+class Mago : public Personaje {
+public:
+    Mago(string nombre)
+        : Personaje(nombre, 100, 40, 10) {}
+    void atacar(Personaje& enemigo) override {
+        int dano = ataque - enemigo.getDefensa() / 3;
+        if (dano < 0) dano = 0;
+        enemigo.recibirDano(dano);
+        cout << nombre << " lanza un hechizo a " << enemigo.getNombre() << " causando " << dano << " puntos de daño.\n";
+    }
+    void defender() override {
+        defensa += 5;
+        cout << nombre << " crea un escudo mágico, aumentando su defensa a " << defensa << ".\n";
+    }
+    void usarHabilidadEspecial() override {
+        int dano = 50;
+        cout << nombre << " usa su habilidad especial y lanza un hechizo devastador causando " << dano << " puntos de daño.\n";
+    }
+};
+class Arquero : public Personaje {
+public:
+    Arquero(string nombre)
+        : Personaje(nombre, 120, 35, 15) {}
+    void atacar(Personaje& enemigo) override {
+        int dano = ataque - enemigo.getDefensa() / 2;
+        if (dano < 0) dano = 0;
+        enemigo.recibirDano(dano);
+        cout << nombre << " dispara una flecha a " << enemigo.getNombre() << " causando " << dano << " puntos de daño.\n";
+    }
+    void defender() override {
+        defensa += 7;
+        cout << nombre << " se mueve rápidamente, aumentando su defensa a " << defensa << ".\n";
+    }
+    void usarHabilidadEspecial() override {
+        int dano = 25;
+        cout << nombre << " usa su habilidad especial y dispara una lluvia de flechas causando " << dano << " puntos de daño.\n";
+    }
+};
+int main() {
+    Guerrero guerrero("Aragorn");
+    Mago mago("Gandalf");
+    Arquero arquero("Legolas");
+    guerrero.atacar(mago);
+    mago.defender();
+    arquero.usarHabilidadEspecial();
+    mago.usarHabilidadEspecial();
+    guerrero.defender();
+    return 0;
+}
