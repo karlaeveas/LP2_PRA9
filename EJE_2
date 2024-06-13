@@ -1,0 +1,86 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class Animal {
+public:
+    virtual void comer() = 0;
+    virtual void dormir() = 0;
+    virtual void moverse() = 0;
+    virtual string getEspecie() = 0;
+};
+class Mamifero : public Animal {
+public:
+    void comer() override {
+        cout << "El mamífero come carne" << endl;
+    }
+    void dormir() override {
+        cout << "El mamífero duerme en una casa" << endl;
+    }
+    void moverse() override {
+        cout << "El mamífero camina en cuatro patas" << endl;
+    }
+    string getEspecie() override {
+        return "Mamífero";
+    }
+};
+class Ave : public Animal {
+public:
+    void comer() override {
+        cout << "El ave come semillas" << std::endl;
+    }
+    void dormir() override {
+        cout << "El ave duerme en un nido" << std::endl;
+    }
+    void moverse() override {
+        cout << "El ave vuela" << std::endl;
+    }
+    string getEspecie() override {
+        return "Ave";
+    }
+};
+class Reptil : public Animal {
+public:
+    void comer() override {
+        cout << "El reptil come carne" << std::endl;
+    }
+    void dormir() override {
+        cout << "El reptil duerme en un agujero" << std::endl;
+    }
+    void moverse() override {
+        cout << "El reptil se arrastra" << std::endl;
+    }
+    string getEspecie() override {
+        return "Reptil";
+    }
+};
+class Simulador {
+private:
+    vector<Animal*> animales;
+public:
+    void agregarAnimal(Animal* animal) {
+        animales.push_back(animal);
+    }
+    void simular() {
+        for (Animal* animal : animales) {
+            cout << "Especie: " << animal->getEspecie() << std::endl;
+            animal->comer();
+            animal->dormir();
+            animal->moverse();
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    Simulador simulador;
+    Mamifero perro;
+    Ave loro;
+    Reptil tortuga;
+    simulador.agregarAnimal(&perro);
+    simulador.agregarAnimal(&loro);
+    simulador.agregarAnimal(&tortuga);
+    simulador.simular();
+    return 0;
+}
