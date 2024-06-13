@@ -1,0 +1,94 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Producto {
+public:
+    string nombre;
+    int cantidad;
+    double precio;
+
+    Producto(string nombre, int cantidad, double precio) : 
+        nombre(nombre), cantidad(cantidad), precio(precio) {}
+
+    virtual double valorTotal() const = 0;
+    virtual double aplicarDescuento(double porcentaje) const = 0;
+};
+
+class Electronico : public Producto {
+public:
+    Electronico(string nombre, int cantidad, double precio) : 
+        Producto(nombre, cantidad, precio) {}
+
+    double valorTotal() const override {
+        return cantidad * precio;
+        
+    }
+    
+    double aplicarDescuento(double porcentaje) const override {
+        return valorTotal() * (1 - porcentaje / 100);
+    }
+};
+
+class Ropa : public Producto {
+public:
+    Ropa(string nombre, int cantidad, double precio) : 
+        Producto(nombre, cantidad, precio) {}
+
+    double valorTotal() const override {
+        return cantidad * precio;
+    }
+
+    double aplicarDescuento(double porcentaje) const override {
+        return valorTotal() * (1 - porcentaje / 100);
+    }
+};
+
+class Alimento : public Producto {
+public:
+    Alimento(string nombre, int cantidad, double precio, int diasCaducidad) : 
+        Producto(nombre, cantidad, precio), diasCaducidad(diasCaducidad) {}
+
+    double valorTotal() const override {
+        return cantidad * precio;
+    }
+
+    double aplicarDescuento(double porcentaje) const override {
+        if (diasCaducidad < 10) {
+            porcentaje += 5;
+        }
+        return valorTotal() * (1 - porcentaje / 100);
+    }
+
+private:
+    int diasCaducidad;
+};
+
+int main() {
+    vector<Producto*> inventario;
+
+    inventario.push_back(new Electronico("Celular", 1, 1000));
+    inventario.push_back(new Ropa("Camisa", 1, 2000));
+    inventario.push_back(new Alimento("Doritos", 1, 5, 10));
+
+    double valorTotalInventario = 0;
+    for (Producto* producto : inventario) {
+        valorTotalInventario += producto->valorTotal();
+    }
+    cout << "Precio de todo: " << valorTotalInventario << endl;
+
+    double descuento = 10;
+    for (Producto* producto : inventario) {
+        double precioSinDescuento = producto->valorTotal();
+        double precioConDescuento = producto->aplicarDescuento(descuento);
+        cout << producto->nombre << ": Precio sin descuento: Soles " << precioSinDescuento 
+             << ", Precio con descuento: Soles " << precioConDescuento << endl;
+    }
+
+    for (Producto* producto : inventario) {
+        delete producto;
+    }
+
+    return 0;
+}
