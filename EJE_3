@@ -1,0 +1,84 @@
+#include <iostream>
+#include <memory>
+#include <string>
+
+using namespace std;
+
+class Empleado {
+    private:
+        string nombre;
+        int id; 
+        string departamento;
+        
+    public: 
+        Empleado(string nombre, int id, string departamento)
+            : nombre(nombre), id(id), departamento(departamento) {}
+
+        virtual double calcularSalario() const = 0;
+
+        virtual ~Empleado() {}
+
+        string getNombre() const {
+            return nombre;
+        }
+};
+
+class EmpleadoAsalariado : public Empleado {
+    private:
+        double sueldoBase;
+    
+    public:
+        EmpleadoAsalariado(string nombre, int id, string departamento, double sueldoBase)
+            : Empleado(nombre, id, departamento), sueldoBase(sueldoBase) {}
+    
+        double calcularSalario() const override {
+            return sueldoBase;
+        }
+};
+
+class EmpleadoPorHora : public Empleado {
+    private:
+        double salarioPorHora;
+        int horasTrabajadas;
+    
+    public:
+        EmpleadoPorHora(string nombre, int id, string departamento, double salarioPorHora, int horasTrabajadas)
+            : Empleado(nombre, id, departamento), salarioPorHora(salarioPorHora), horasTrabajadas(horasTrabajadas) {}
+    
+        double calcularSalario() const override {
+            return salarioPorHora * horasTrabajadas;
+        }
+};
+
+class EmpleadoComisionista : public Empleado {
+    private:
+        double ventaTotal;
+        double comisionPorVenta;
+    
+    public:
+        EmpleadoComisionista(string nombre, int id, string departamento, double ventaTotal, double comisionPorVenta)
+            : Empleado(nombre, id, departamento), ventaTotal(ventaTotal), comisionPorVenta(comisionPorVenta) {}
+    
+        double calcularSalario() const override {
+            return ventaTotal * comisionPorVenta;
+        }
+};
+
+int main() {
+    const int NUM_EMPLEADOS = 3;
+    Empleado* empleados[NUM_EMPLEADOS];
+
+    empleados[0] = new EmpleadoAsalariado("Juan", 1, "Ventas", 3000.0);
+    empleados[1] = new EmpleadoPorHora("Ana", 2, "Producción", 15.0, 160);
+    empleados[2] = new EmpleadoComisionista("Luis", 3, "Marketing", 20000.0, 0.05);
+
+    for (int i = 0; i < NUM_EMPLEADOS; ++i) {
+        cout << "Salario de " << empleados[i]->getNombre() << ": " << empleados[i]->calcularSalario() << endl;
+    }
+
+    for (int i = 0; i < NUM_EMPLEADOS; ++i) {
+        delete empleados[i];
+    }
+
+    return 0;
+}
