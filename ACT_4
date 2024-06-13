@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Clase base
+class Animal {
+public:
+    virtual void hacerSonido() const {
+        cout << "sonido de animal" << endl;
+    }
+    virtual ~Animal() = default; // Destructor virtual por defecto
+};
+
+// Clase derivada Perro
+class Perro : public Animal {
+public:
+    void hacerSonido() const override {
+        cout << "Guau guau" << endl;
+    }
+};
+
+// Clase derivada Gato
+class Gato : public Animal {
+public:
+    void hacerSonido() const override {
+        cout << "Miau miau" << endl;
+    }
+};
+
+// Clase derivada Vaca
+class Vaca : public Animal {
+public:
+    void hacerSonido() const override {
+        cout << "Muuu muuu" << endl;
+    }
+};
+
+int main() {
+    vector<Animal*> animales; // Arreglo de punteros a Animal
+
+    animales.push_back(new Perro());
+    animales.push_back(new Gato());
+    animales.push_back(new Vaca());
+
+    for (const auto& animal : animales) { // Recorrer el arreglo y llamar hacerSonido() para cada objeto
+        animal->hacerSonido();
+    }
+
+    // Liberar la memoria asignada
+    for (auto& animal : animales) {
+        delete animal;
+    }
+
+    return 0;
+}
